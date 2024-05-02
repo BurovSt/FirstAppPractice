@@ -3,14 +3,28 @@
 
 {% block content %}
 
-    <h1>Hello World!</h1>
-    <ul>
-        {% for item in mylist %}
-            <li {% if item == 30 %}style="color: red"{% endif %}>{{ item }}</li>
-        {% endfor %}
-    </ul>
-    <p>{{ mylist }}</p>
+    <h1></h1>
+    <form method="POST" action="{{ url_for('index') }}">
+        <input type="text" name="username" placeholder="Username"><br>
+        <input type="text" name="password" placeholder="Password"><br>
+        <input type="submit" value="Login">
+    </form>
 
-    <a href="{{ url_for('other') }}">Other</a>
+    <h1>File Upload</h1>
+    <form method="POST" action="{{ url_for('file_upload') }}" enctype="multipart/form-data">
+        <input type="file" name="file" accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel, text/plain" required="required">
+        <input type="Submit" value="Upload File">
+    </form>
 
+    <h1>Convert to CSV</h1>
+        <form method="POST" action="{{ url_for('convert_csv') }}" enctype="multipart/form-data">
+        <input type="file" name="file" accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel, text/plain" required="required">
+        <input type="Submit" value="Upload File">
+    </form>
+
+    <h1>Convert to CSV Two</h1>
+        <form method="POST" action="{{ url_for('convert_csv_two') }}" enctype="multipart/form-data">
+        <input type="file" name="file" accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel, text/plain" required="required">
+        <input type="Submit" value="Upload File">
+    </form>
 {% endblock %}

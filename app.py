@@ -1,40 +1,80 @@
-from flask import Flask, request, make_response, render_template, redirect, url_for
+import os
+import uuid
+import pandas as pd
+from flask import Flask, send_from_directory, request, render_template, Response
 
 app = Flask(__name__, template_folder='templates')
 
 
-@app.route('/')
+@app.route('/', methods=['GET', 'POST'])
 def index():
-    myvalue = 'NeuralNine'
-    myresults = 10 + 20
-    mylist = [10, 20, 30, 40, 50]
-    return render_template('index.html',
-                           mylist=mylist)
-
-@app.route('/other')
-def other():
-    some_text = 'Hello World'
-    return render_template('other.html', some_text=some_text)
+    if request.method == 'GET':
+        return render_template('index.html')
+    elif request.method == 'POST':
+        username = request.form.get('username')
+        password = request.form.get('password')
 
 
-@app.route('/redirect_endpoint')
-def redirect_endpoint():
-    return redirect(url_for('other'))
-@app.template_filter('reverse_string')
-def reverse_string(s):
-    return s[::-1]
+    if username == "neuralnine" and password == "password":
+        return "Success"
 
-@app.template_filter('repeat')
-def repeat(s, times=2):
-    return s * times
+    else:
+        return "Failure"
 
-@app.template_filter('alternate_case')
-def alternate_case(s):
-    return "".join([c.upper() if i % 2 == 0 else c.lower()
-                    for i, c in enumerate(s)])
+
+@app.route('/file_upload', methods=['POST'])
+def file_upload():
+    file = request.files['file']
+
+    if file.content_type == 'text/plain':
+        return file.read().decode()
+
+    elif file.content_type == 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' or file.content_type == 'application/vnd.ms-excel':
+        dataframe = pd.read_excel(file)
+        return dataframe.to_html()
+
+
+@app.route('/convert_csv', methods=['POST'])
+def  convert_csv():
+    file = request.files['file']
+    dataframe = pd.read_excel(file)
+
+    response = Response(
+        dataframe.to_csv(),
+        mimetype='text/csv',
+        headers={
+            'Content-Disposition': 'attachment; filename=result.csv'
+        }
+    )
+    return response
+
+
+@app.route('/convert_csv_two', methods=['POST'])
+def convert_csv_two():
+    file = request.files['file']
+
+    dataframe = pd.read_excel(file)
+
+    if not os.path.exists('downloads'):
+        os.makedirs('downloads')
+
+    filename = f'{uuid.uuid4()}.csv'
+
+    dataframe.to_csv(os.path.join('downloads', filename))
+
+    return render_template('download.html', filename=filename)
+
+
+@app.route('/download/<filename>')
+def download(filename):
+    return send_from_directory('downloads', filename, download_name='result.csv')
+
+
+
 
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5555, debug=True)
+    app.run(host='0.0.0.0', debug=True)
+
 
 
