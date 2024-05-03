@@ -1,7 +1,7 @@
 import os
 import uuid
 import pandas as pd
-from flask import Flask, send_from_directory, request, render_template, Response
+from flask import Flask, send_from_directory, jsonify, request, render_template, Response
 
 app = Flask(__name__, template_folder='templates')
 
@@ -70,7 +70,15 @@ def download(filename):
     return send_from_directory('downloads', filename, download_name='result.csv')
 
 
+@app.route('/handle_post', methods=['POST'])
+def handle_post():
+    greeting = request.json['greeting']
+    name = request.json['name']
 
+    with open('file.txt', 'w') as f:
+        f.write(f'{greeting}, {name}')
+
+    return jsonify({'message': 'Secessfuly written!'})
 
 
 if __name__ == '__main__':
