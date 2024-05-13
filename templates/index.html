@@ -4,10 +4,13 @@
 {% block content %}
 
    <h1>Hello World</h1>
+   <p>{{ message }}</p>
 
-    <a href="#" class="btn btn-danger">Button text</a>
-
-    <p class="special">Hello</p>
-
-    <script src="/js/hello.js"></script>
+   <a href="{{ url_for('set_data') }}">Set Session Data</a><br>
+   <a href="{{ url_for('get_data') }}">Get Session Data</a><br>
+   <a href="{{ url_for('clear_session') }}">Clear session</a><br>
+   <a href="{{ url_for('set_cookie') }}">set cookie</a><br>
+   <a href="{{ url_for('get_cookie') }}">Get cookie</a><br>
+   <a href="{{ url_for('remove_cookie') }}">Remove cookie</a><br>
+<a href="{{ url_for('login') }}">Login</a><br>
 {% endblock %}

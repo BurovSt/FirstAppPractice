@@ -3,12 +3,19 @@
 <head>
     <meta charset="UTF-8">
     <title>{% block title %}Default value{% endblock %}</title>
-    <link rel="stylesheet" type="text/css" href="/css/bootstrap.css">
-    <link rel="stylesheet" type="text/css" href="/css/style.css">
+
 </head>
 <body>
+    {% with messages = get_flashed_messages() %}
+        {% if messages %}
+            <ul>
+            {% for message in messages %}
+                <li>{{message }}</li>
+            {% endfor %}
+            </ul>
+        {% endif %}
+    {% endwith %}
+    {% block content %} {% endblock %}
 
-    {% block content %}{% endblock %}
-    <script src="/js/bootstrap.js"></script>
 </body>
 </html>
