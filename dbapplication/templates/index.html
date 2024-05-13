@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+{% block title %}index{% endblock %}
+
+{% block content %}
+<h1>index Page</h1>
+
+    <ul>
+        {% for person in people %}
+            <li>{{ person }} <button onclick="deletePerson({{ person.person_id }}) ">Delete</button><a href="{{ url_for('details', person_id=person.person_id) }}">Details</a></li>
+        {% endfor %}
+    </ul>
+
+    <h3>New Person</h3>
+    <form action="{{ url_for('index') }}" method="POST">
+        <input type="text" name="name" placeholder="Name" required="required"><br>
+        <input type="number" name="age" placeholder="Age"><br>
+        <input type="text" name="job" placeholder="Job"><br>
+        <input type="submit" value="Create">
+    </form>
+
+    <script type="text/javascript">
+        function deletePerson(person_id) {
+            fetch('{{ url_for("delete", person_id=person_id) }}' + person_id, {
+                method: 'DELETE'
+            }).then(response => {
+                if (response.ok) {
+                    window.location.reload();
+                } else {
+                    console.error('Failed to delete item with person_id: ', person_id);
+                }
+            })
+                .catch(error => {
+                    console.error('Error during fetch person_id', error);
+                 });
+        }
+
+    </script>
+{% endblock %}
